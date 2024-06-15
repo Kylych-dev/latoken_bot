@@ -2,18 +2,18 @@ from aiogram import Bot, types, Dispatcher, html
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
 from aiogram.client.default import DefaultBotProperties
-from date_info import get_current_datetime, next_friday
 
 from datetime import datetime, timedelta
-
-
 
 import asyncio, sys, logging, openai
 
 
-
-from core import main
 from core import settings
+from date_info import (
+    get_current_datetime,
+    next_friday,
+    technologies_used
+)
 
 
 # _______________________________________
@@ -40,14 +40,9 @@ async def set_commands(bot: Bot):
 
 # _______________________________________
 
-
-
-
-
-# @dp.message(Command(commands=['start']))
-# async def command_start(message: types.Message):
-#     await message.answer(f'Hello, {html.bold(message.from_user.full_name)}!')
-
+@dp.message(Command(commands=["technologies"]))
+async def command_technologies(message: types.Message):
+    tech_list = '\n'.join(technologies_used)
 
 @dp.message(Command(commands=['chat']))
 async def command_chat(message: types.Message):
@@ -70,21 +65,25 @@ async def command_hackathon(message: types.Message):
 async def message_handler(message: types.Message):
     if message.text.startswith('/chat'):
         return
-    response = openai.ChatCompletion.create(
-        model='gpt-4o',
-        # prompt=message.text,
-        max_tokens=100,
-        messages=[
-            {
-                'role': 'user',
-                'content': message.text,
-                # 'role': 'system',
-                # 'content': prompt
+    try:
+        response = openai.ChatCompletion.create(
+            model='gpt-4o',
+            # prompt=message.text,
+            max_tokens=100,
+            messages=[
+                {
+                    'role': 'user',
+                    'content': message.text,
+                    # 'role': 'system',
+                    # 'content': prompt
 
-            }
-        ]
-    )
-    await message.answer(response.choices[0].message['content'])
+                }
+            ]
+        )
+        await message.answer(response.choices[0].message['content'])
+    except Exception as ex:
+        logging.error(f"Error processing message: {ex}")
+        await message.answer("Произошла ошибка при обработке запроса. Попробуйте позже.")
 
 
 async def main():
