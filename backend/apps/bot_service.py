@@ -9,10 +9,11 @@ import asyncio, sys, logging, openai
 
 
 from core import settings
-from date_info import (
+from utils import (
     get_current_datetime,
     next_friday,
-    technologies_used
+    technologies_used,
+    scrap_website
 )
 
 
@@ -31,6 +32,7 @@ commands = [
     types.BotCommand(command="/start", description="Начать взаимодействие с ботом"),
     types.BotCommand(command="/hackathon", description="Узнать сколько осталось до ближайшего хакатона"),
     types.BotCommand(command="/chat", description="Начать чат с ботом"),
+    types.BotCommand(command="/technologies", description='стек который я использовал')
 ]
 
 
@@ -40,9 +42,13 @@ async def set_commands(bot: Bot):
 
 # _______________________________________
 
+
 @dp.message(Command(commands=["technologies"]))
 async def command_technologies(message: types.Message):
     tech_list = '\n'.join(technologies_used)
+    print('hello im technologies')
+    await message.answer(f'В проекте использованы следующие технологии:\n\n{tech_list}')
+
 
 @dp.message(Command(commands=['chat']))
 async def command_chat(message: types.Message):
@@ -63,8 +69,24 @@ async def command_hackathon(message: types.Message):
 
 @dp.message()
 async def message_handler(message: types.Message):
-    if message.text.startswith('/chat'):
+    user_txt = message.text
+    if (user_txt.startswith('/start') or
+            user_txt.startswith('/hackathon') or
+            user_txt.startswith('/chat') or
+            user_txt.startswith('/technologies')
+    ):
         return
+
+    if 'единорогов' in user_txt.lower():
+        url = 'https://latoken.me/culture-139'
+        parsed_data = await scrap_website(url)
+        if parsed_data:
+            # await message.answer(parsed_data.get_text())
+            await message.answer(parsed_data.text)
+        else:
+            await message.answer('Не удалось получить данные с сайта')
+        return
+
     try:
         response = openai.ChatCompletion.create(
             model='gpt-4o',
@@ -83,7 +105,9 @@ async def message_handler(message: types.Message):
         await message.answer(response.choices[0].message['content'])
     except Exception as ex:
         logging.error(f"Error processing message: {ex}")
-        await message.answer("Произошла ошибка при обработке запроса. Попробуйте позже.")
+        await message.answer(
+            "Произошла ошибка при обработке запроса. Попробуйте позже."
+        )
 
 
 async def main():

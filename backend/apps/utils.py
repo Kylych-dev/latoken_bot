@@ -1,5 +1,17 @@
 from datetime import datetime, timedelta
 
+import requests
+# parsing website
+from bs4 import BeautifulSoup as bs
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from bs4 import BeautifulSoup as bs
+import time
+
+
 
 def next_friday():
     today = datetime.now()

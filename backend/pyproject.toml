@@ -11,6 +11,11 @@ python-decouple = "^3.8"
 aiogram = "^3.7.0"
 openai = "0.28"
 python-dotenv = "^1.0.1"
+beautifulsoup4 = "^4.12.3"
+selenium = "^4.21.0"
+requests-html = "^0.10.0"
+lxml = "^5.2.2"
+lxml-html-clean = "^0.1.1"
 
 
 [build-system]
