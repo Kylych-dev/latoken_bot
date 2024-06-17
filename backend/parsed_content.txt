@@ -1,0 +1,11 @@
+predefined_responses = {
+    'единорогов': (
+        "Culture is born in the war of economic selection. "
+        "Culture is the war between the past and the future. "
+        "Once a greater culture is born, it erases cultures of the past. "
+        "Past cultures strive to survive and thus the war is imminent and intense "
+        "as culturicide erases way more information than genocide."
+    ),
+    'другое ключевое слово': 'Здесь может быть ваш предварительно сохраненный ответ.',
+    # Добавьте другие ключевые слова и соответствующие ответы по мере необходимости
+}

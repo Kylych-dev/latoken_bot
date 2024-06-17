@@ -13,7 +13,7 @@ from utils import (
     get_current_datetime,
     next_friday,
     technologies_used,
-    scrap_website
+    # scrap_website
 )
 
 
@@ -59,8 +59,7 @@ async def command_chat(message: types.Message):
 async def command_hackathon(message: types.Message):
     current_time, current_date = get_current_datetime()
     next_friday_date = next_friday()
-    # days_until_next_friday = current_date - next_friday_date
-    # await message.answer(f'До следущего хакатона {message.from_user.full_name}!')
+
 
     days_until_next_friday = (next_friday_date - datetime.now().date()).days
     await message.answer(
@@ -78,26 +77,17 @@ async def message_handler(message: types.Message):
         return
 
     if 'единорогов' in user_txt.lower():
-        url = 'https://latoken.me/culture-139'
-        parsed_data = await scrap_website(url)
-        if parsed_data:
-            # await message.answer(parsed_data.get_text())
-            await message.answer(parsed_data.text)
-        else:
-            await message.answer('Не удалось получить данные с сайта')
+        await message.answer('hello how are you')
         return
 
     try:
         response = openai.ChatCompletion.create(
             model='gpt-4o',
-            # prompt=message.text,
             max_tokens=100,
             messages=[
                 {
                     'role': 'user',
                     'content': message.text,
-                    # 'role': 'system',
-                    # 'content': prompt
 
                 }
             ]
